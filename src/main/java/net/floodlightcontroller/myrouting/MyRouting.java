@@ -368,38 +368,34 @@ public class MyRouting implements IOFMessageListener, IFloodlightModule {
 				srcNode = dstNode;
 			}
 			
-			srcNode = reverseQ.pollLast();
-			
-			ArrayList<NodePortTuple> reversePath = new ArrayList<NodePortTuple>();
-			
-			while(!reverseQ.isEmpty()) {
-				dstNode = reverseQ.pollLast();
-//				System.out.println("Queue: " + queue);
-//				System.out.println("Src: " + srcNode.toString() + " Dest: " + dstNode.toString()); 
-				for(Entry<NodePortTuple, Link> i : switchPortLinks.entrySet()) {
-					Link value = i.getValue();
-					if((value.getSrc() == srcNode) && (value.getDst() == dstNode)) {
-						reversePath.add(new NodePortTuple(value.getSrc(), value.getSrcPort()));
-						reversePath.add(new NodePortTuple(value.getDst(), value.getDstPort()));
-					}
-				}
-				srcNode = dstNode;
-			}
+//			srcNode = reverseQ.pollLast();
+//			
+//			while(!reverseQ.isEmpty()) {
+//				dstNode = reverseQ.pollLast();
+////				System.out.println("Queue: " + queue);
+////				System.out.println("Src: " + srcNode.toString() + " Dest: " + dstNode.toString()); 
+//				for(Entry<NodePortTuple, Link> i : switchPortLinks.entrySet()) {
+//					Link value = i.getValue();
+//					if((value.getSrc() == srcNode) && (value.getDst() == dstNode)) {
+//						path.add(new NodePortTuple(value.getSrc(), value.getSrcPort()));
+//						path.add(new NodePortTuple(value.getDst(), value.getDstPort()));
+//					}
+//				}
+//				srcNode = dstNode;
+//			}
 	        
 //			Route route = null;
 			Route route = new Route(new RouteId(sourceNode, destNode), path);
-			Route revRoute = new Route(new RouteId(destNode, sourceNode), reversePath);
 			
-			if(path != null) {
-				System.out.println("Path: " + path.toString());
-			}
+//			if(path != null) {
+//				System.out.println("Path: " + path.toString());
+//			}
 			
 			System.out.println("route: " + routeString);
 
 			// Write the path into the flow tables of the switches on the path.
 			if (route != null) {
 				installRoute(route.getPath(), match);
-				installRoute(revRoute.getPath(), new OFMatch());
 			}
 			
 			return Command.STOP;
